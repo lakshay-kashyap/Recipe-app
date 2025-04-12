@@ -2,7 +2,20 @@ import { Heart, HeartPulse, Soup } from "lucide-react";
 import React, { useState } from "react";
 
 const RecipeCard = ({ recipe }) => {
-  const [isFavorite, setIsFavorite] = useState(localStorage.getItem("favorites").includes(recipe.idMeal));
+  const getInitialFavorites = () => {
+    if (typeof window !== "undefined") {
+      try {
+        return JSON.parse(localStorage.getItem("favorites")) || [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  };
+  
+  const [isFavorite, setIsFavorite] = useState(() =>
+    getInitialFavorites().some((fav) => fav.idMeal === recipe.idMeal)
+  );
 const addRecipeToFavorites = () => {
   let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
   const isFavoriteExists = favorites.some((fav) => fav.idMeal === recipe.idMeal);
